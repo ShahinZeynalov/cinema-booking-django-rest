@@ -5,7 +5,7 @@ from .models import *
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
-        fields =['title','slug','age_restriction','average','format','poster']
+        fields =['id','title','slug','age_restriction','average','format','poster']
 
 class CitySerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,13 +22,13 @@ class HallSerializer(serializers.ModelSerializer):
     theater = TheaterSerializer()
     class Meta:
         model = Hall
-        fields=['name','theater','seats']
+        fields = ['name','theater','seats']
 
 class SessionTimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hour
         fields = '__all__'
-class  SessionDateSerializer(serializers.ModelSerializer):
+class SessionDateSerializer(serializers.ModelSerializer):
     times  = serializers.SerializerMethodField()
 
     class Meta:

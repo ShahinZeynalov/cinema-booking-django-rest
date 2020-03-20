@@ -23,6 +23,5 @@ urlpatterns = [
     path('rest-auth/', include('rest_auth.urls')),
     path('registration/', include('rest_auth.registration.urls')),
     path('api/', include('cinema_app.urls')),
-    path('api/', include('cinema_app.routers')),
 
 ]
