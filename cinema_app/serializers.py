@@ -2,21 +2,34 @@
 from rest_framework import serializers
 from .models import *
 
+class MovieFotmatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MovieFormat
+        fields = ['name']
+
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
-        fields =['id','title','slug','age_restriction','average','format','poster']
+        fields =['id','title','slug','age_restriction','average','formats','poster']
 
-class CitySerializer(serializers.ModelSerializer):
+class MovieDetailSerializer(serializers.ModelSerializer):
+    formats = serializers.SerializerMethodField()
     class Meta:
-        model=City
-        fields=['name']
+        model = Movie
+        fields ='__all__'
+    def get_formats(self,obj):
+        return MovieFotmatSerializer(obj.formats.all(),many=True).data
 
 class TheaterSerializer(serializers.ModelSerializer):
-    city = CitySerializer()
     class Meta:
         model = Theater
-        fields=['name','city']
+        fields=['name']
+
+class CitySerializer(serializers.ModelSerializer):
+    theaters = TheaterSerializer(source='theater_set',many=True)
+    class Meta:
+        model=City
+        fields=['name', 'theaters']
 
 class HallSerializer(serializers.ModelSerializer):
     theater = TheaterSerializer()
@@ -30,15 +43,11 @@ class SessionTimeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 class SessionDateSerializer(serializers.ModelSerializer):
     times  = serializers.SerializerMethodField()
-
     class Meta:
         model = SessionDate
         fields='__all__'
-
     def get_times(self,obj):
         return SessionTimeSerializer(obj.times.all(),many=True).data
-
-
 
 class SessionSerializer(serializers.ModelSerializer):
     movie = MovieSerializer()
@@ -53,11 +62,9 @@ class SessionDetailSerializer(serializers.ModelSerializer):
     dates = serializers.SerializerMethodField()
     # movie = serializers.PrimaryKeyRelatedField(queryset=Movie.objects.all(), write_only=True)
     movie = MovieSerializer()
-
     class Meta:
         model = Session
         fields ='__all__'
-
     def get_dates(self, obj):
         return SessionDateSerializer(obj.dates.all(), many=True).data
 

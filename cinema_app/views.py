@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from rest_framework import generics
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.views import APIView,View
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from .models import Session,Booking,Comment
 from .serializers import *
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.response import Response
+from django.http import JsonResponse
 
 class MovieListAPIView(generics.ListAPIView):
     queryset = Movie.objects.all()
@@ -12,8 +15,8 @@ class MovieListAPIView(generics.ListAPIView):
 
 class MovieDetailAPIView(generics.RetrieveAPIView):
     queryset = Movie.objects.all()
-    serializer_class = MovieSerializer
-    lookup_field = 'id'
+    serializer_class = MovieDetailSerializer
+    lookup_field = 'slug'
     lookup_url_kwarg='abc'
 
 class SessionListAPIView(generics.ListAPIView):
@@ -46,6 +49,6 @@ class CommentViewSet(ModelViewSet):
     def perform_update(self,serializer):
         serializer.save(user = self.request.user)
 
-class CityTheaterAPIView(generics.ListAPIView):
-    queryset = City.objects.all()
+class CityListAPIView(generics.ListAPIView):
+    queryset = City.objects.exclude(theater__isnull=True)
     serializer_class = CitySerializer

@@ -35,11 +35,17 @@ class CustomRegisterSerializer(serializers.Serializer):
         required=True,
             help_text='Your firstname',
     )
+    last_name = serializers.CharField(
+        max_length=get_username_max_length(),
+        min_length=allauth_settings.USERNAME_MIN_LENGTH,
+        required=True,
+            help_text='Your lastname',
+    )
     phone = serializers.CharField(
-        max_length=14,
+        # max_length=14,
         min_length=14,
         required=True,
-            help_text='Your phone number must be a unique',
+            help_text='Your phone number',
     )
     # phone = serializers.CharField()
     email = serializers.EmailField(required=allauth_settings.EMAIL_REQUIRED,

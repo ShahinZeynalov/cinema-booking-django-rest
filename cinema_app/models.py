@@ -7,7 +7,6 @@ from django.template.defaultfilters import slugify
 def generate_ticket_id():
     return str(uuid.uuid4()).split("-")[-1].upper()
 
-
 class MovieFormat(models.Model):
     name=models.CharField(max_length=20)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -37,7 +36,7 @@ class Movie(models.Model):
     now_playing = models.NullBooleanField()
     trailer = models.URLField()
     lang = models.CharField(max_length = 7)
-    format = models.ManyToManyField('MovieFormat')
+    formats = models.ManyToManyField('MovieFormat')
     slug = models.SlugField(null=True,blank=True)
     age_restriction = models.CharField(max_length=2, null=True)
 
@@ -112,7 +111,7 @@ class Hall(models.Model):
     name = models.CharField(max_length=31)
     seats = models.ManyToManyField('Seat')
     theater = models.ForeignKey('Theater',on_delete=models.CASCADE)
-
+    type = models.ForeignKey('HallType',on_delete=models.DO_NOTHING)
 
     type = models.ForeignKey('HallType',on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -130,7 +129,7 @@ class Seat(models.Model):
 
     def __str__(self):
         return  f'id:{self.id} is active: {self.active} row: {self.row} column: {self.column} seat: {self.number}'
-        
+
 class Session(models.Model):
     movie = models.ForeignKey('Movie',on_delete=models.CASCADE)
     # sessiondate = models.ManyToManyField('SessionDate')
