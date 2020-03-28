@@ -23,7 +23,7 @@ class MovieDetailSerializer(serializers.ModelSerializer):
 class TheaterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Theater
-        fields=['name']
+        fields='__all__'
 
 class CitySerializer(serializers.ModelSerializer):
     theaters = TheaterSerializer(source='theater_set',many=True)
@@ -51,10 +51,10 @@ class SessionDateSerializer(serializers.ModelSerializer):
 
 class SessionSerializer(serializers.ModelSerializer):
     movie = MovieSerializer()
+    hall = HallSerializer()
     class Meta:
         model = Session
-        fields =['id', 'movie']
-
+        fields ='__all__'
 
 class SessionDetailSerializer(serializers.ModelSerializer):
 
@@ -67,10 +67,6 @@ class SessionDetailSerializer(serializers.ModelSerializer):
         fields ='__all__'
     def get_dates(self, obj):
         return SessionDateSerializer(obj.dates.all(), many=True).data
-
-
-
-
 
 class SeatSerializer(serializers.ModelSerializer):
     class Meta:

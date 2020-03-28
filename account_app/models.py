@@ -17,8 +17,14 @@ from django.contrib.auth.models import BaseUserManager
 
 
 class User(AbstractUser):
+    GENDER_CHOICE = (
+        (0,'unselected'),
+        (1,'male'),
+        (2,'female')
+    )
     # phone = models.CharField(max_length=20,null=True,blank=True,unique=True)
     phone = PhoneNumberField()
+    gender = models.IntegerField(choices=GENDER_CHOICE,default=0)
     birthday = models.DateField(null=True,blank=True)
     card_number = models.CharField(max_length=55,null=True,blank=True)
     email = models.EmailField(max_length=55,unique=True)

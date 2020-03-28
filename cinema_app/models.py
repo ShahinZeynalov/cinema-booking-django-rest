@@ -33,7 +33,7 @@ class Movie(models.Model):
     release_date = models.DateField()
     casts = models.CharField(max_length=127)
     poster= models.ImageField(upload_to='movie_posters/')
-    now_playing = models.NullBooleanField()
+    now_playing = models.BooleanField(default=False,blank=True)
     trailer = models.URLField()
     lang = models.CharField(max_length = 7)
     formats = models.ManyToManyField('MovieFormat')
@@ -55,19 +55,9 @@ class Hour(models.Model):
         def __str__(self):
             return f'{self.hour}'
 
-# class SessionTime(models.Model):
-#     times = models.ManyToManyField('Hour')
-#     Hall = models.ForeignKey('Hall',on_delete=models.CASCADE)
-#
-#     def __str__(self):
-#         return f'{self.Hall}'
-
 class SessionDate(models.Model):
     date = models.DateField()
     times = models.ManyToManyField('Hour')
-    # hall = models.ForeignKey('Hall',on_delete=models.CASCADE)
-
-    # sessiontime = models.ManyToManyField('SessionTime')
 
     def __str__(self):
         return f' {self.date}'
@@ -117,7 +107,7 @@ class Hall(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return  f'{self.name}'
+        return  f'{self.theater.city} {self.theater} {self.name} '
 
 class Seat(models.Model):
     row = models.PositiveSmallIntegerField(default=0)
@@ -129,16 +119,13 @@ class Seat(models.Model):
 
     def __str__(self):
         return  f'id:{self.id} is active: {self.active} row: {self.row} column: {self.column} seat: {self.number}'
-
 class Session(models.Model):
     movie = models.ForeignKey('Movie',on_delete=models.CASCADE)
-    # sessiondate = models.ManyToManyField('SessionDate')
-    created_at = models.DateTimeField(auto_now_add=True)
-    # date = models.DateField()
     dates = models.ManyToManyField('SessionDate')
     hall = models.ForeignKey('Hall',on_delete=models.CASCADE)
-
     slug = models.SlugField(null=True,blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return  f'{ self.movie}'

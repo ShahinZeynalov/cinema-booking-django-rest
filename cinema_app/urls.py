@@ -15,6 +15,7 @@ urlpatterns = [
     path('movies/<abc>', MovieDetailAPIView.as_view(),name='movie'),
     path('booking/', BookingCreateAPIView.as_view()),
     path('', include(router.urls)),
-    path('cities/', CityListAPIView.as_view(), name='cities')
+    path('cities/', CityListAPIView.as_view(), name='cities'),
+    path('theaters/', TheaterListAPIView.as_view(), name='theaters')
 
 ]

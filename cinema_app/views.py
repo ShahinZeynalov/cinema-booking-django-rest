@@ -5,13 +5,22 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from .models import Session,Booking,Comment
 from .serializers import *
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from django.http import JsonResponse
+from django_filters.rest_framework import DjangoFilterBackend
+from django_filters.rest_framework import FilterSet, filters
+
+class MovieFilter(FilterSet):
+    city = filters.CharFilter('session__hall__theater__city__name',distinct=True)
+    theater = filters.CharFilter('session__hall__theater__name',distinct=True)
+    class Meta:
+        model = Movie
+        fields = ('city', 'theater')
 
 class MovieListAPIView(generics.ListAPIView):
     queryset = Movie.objects.all()
     serializer_class=MovieSerializer
+    filter_class = MovieFilter
 
 class MovieDetailAPIView(generics.RetrieveAPIView):
     queryset = Movie.objects.all()
@@ -52,3 +61,7 @@ class CommentViewSet(ModelViewSet):
 class CityListAPIView(generics.ListAPIView):
     queryset = City.objects.exclude(theater__isnull=True)
     serializer_class = CitySerializer
+
+class TheaterListAPIView(generics.ListAPIView):
+    queryset = Theater.objects.all()
+    serializer_class = TheaterSerializer

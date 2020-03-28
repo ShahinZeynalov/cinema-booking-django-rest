@@ -15,6 +15,12 @@ try:
 except ImportError:
     raise
 
+
+GENDER_CHOICE = (
+    (1,'male'),
+    (2,'female')
+)
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -41,13 +47,14 @@ class CustomRegisterSerializer(serializers.Serializer):
         required=True,
             help_text='Your lastname',
     )
+    gender = serializers.ChoiceField(choices=GENDER_CHOICE,required=True)
+
     phone = serializers.CharField(
         # max_length=14,
-        min_length=14,
+        # min_length=14,
         required=True,
             help_text='Your phone number',
     )
-    # phone = serializers.CharField()
     email = serializers.EmailField(required=allauth_settings.EMAIL_REQUIRED,
         help_text='Email must be a unique')
     password1 = serializers.CharField(write_only=True,required=True,
@@ -81,15 +88,18 @@ class CustomRegisterSerializer(serializers.Serializer):
         pass
 
     def get_cleaned_data(self):
+        print('----------',self.validated_data)
         return {
             # 'username': self.validated_data.get('username', ''),
             'first_name': self.validated_data.get('first_name', ''),
             'last_name': self.validated_data.get('last_name', ''),
+            'gender': self.validated_data.get('gender', ''),
             'password1': self.validated_data.get('password1', ''),
             'email': self.validated_data.get('email', '')
         }
 
     def save(self, request):
+        print('-------request',request)
         adapter = get_adapter()
         user = adapter.new_user(request)
         self.cleaned_data = self.get_cleaned_data()
