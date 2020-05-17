@@ -28,12 +28,6 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs={'email':{'read_only':True},}
 
 class CustomRegisterSerializer(serializers.Serializer):
-    # username = serializers.CharField(
-    #     max_length=get_username_max_length(),
-    #     min_length=allauth_settings.USERNAME_MIN_LENGTH,
-    #     required=True,
-    #         help_text='Username must be a unique',
-    # )
 
     first_name = serializers.CharField(
         max_length=get_username_max_length(),
@@ -99,7 +93,6 @@ class CustomRegisterSerializer(serializers.Serializer):
         }
 
     def save(self, request):
-        print('-------request',request)
         adapter = get_adapter()
         user = adapter.new_user(request)
         self.cleaned_data = self.get_cleaned_data()

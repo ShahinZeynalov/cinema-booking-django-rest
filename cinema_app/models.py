@@ -73,7 +73,7 @@ class City(models.Model):
 
 class Theater(models.Model):
     name = models.CharField(max_length=31)
-    city = models.ForeignKey('City',on_delete=models.CASCADE)
+    city = models.ForeignKey('City',on_delete=models.CASCADE, related_name='theaters')
     address = models.CharField(max_length = 127)
     phone = models.CharField(max_length=15,null=True,blank=True)
     slug = models.SlugField(null=True,blank=True)
@@ -100,8 +100,8 @@ class HallType(models.Model):
 class Hall(models.Model):
     name = models.CharField(max_length=31)
     seats = models.ManyToManyField('Seat')
-    theater = models.ForeignKey('Theater',on_delete=models.CASCADE)
-    type = models.ForeignKey('HallType',on_delete=models.DO_NOTHING)
+    theater = models.ForeignKey('Theater',on_delete=models.CASCADE,related_name='halls')
+    type = models.ForeignKey('HallType',on_delete=models.CASCADE)
 
     type = models.ForeignKey('HallType',on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -122,13 +122,13 @@ class Seat(models.Model):
 class Session(models.Model):
     movie = models.ForeignKey('Movie',on_delete=models.CASCADE)
     dates = models.ManyToManyField('SessionDate')
-    hall = models.ForeignKey('Hall',on_delete=models.CASCADE)
+    hall = models.ForeignKey('Hall',on_delete=models.CASCADE, related_name='sessions')
     slug = models.SlugField(null=True,blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return  f'{ self.movie}'
+        return  f'{ self.movie} {self.hall}'
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -169,7 +169,7 @@ class Booking(models.Model):
     """Create Reservation"""
     seats = models.ManyToManyField(Seat,related_name='seat')
     session = models.ForeignKey('Session',on_delete=models.CASCADE)
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    user = models.ForeignKey(User,on_delete=models.CASCADE,)
     datetime = models.DateTimeField()
     ticket_id = models.CharField(max_length=127,blank=True,null=True)
     objects = models.Manager()

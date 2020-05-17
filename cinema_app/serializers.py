@@ -1,4 +1,3 @@
-
 from rest_framework import serializers
 from .models import *
 
@@ -18,18 +17,43 @@ class MovieDetailSerializer(serializers.ModelSerializer):
         model = Movie
         fields ='__all__'
     def get_formats(self,obj):
-        return MovieFotmatSerializer(obj.formats.all(),many=True).data
+        return MovieFotmatSerializer(obj.formats.all(), many=True).data
+
+
+# class TheaterSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Theater
+#         fields='__all__'
+
+
+
+
+class FilteredTheaterSerializer(serializers.ListSerializer):
+
+    def to_representation(self, data):
+        print('--------', data.all())
+        data = data.all()
+
+        return super(FilteredTheaterSerializer, self).to_representation(data)
+
+
 
 class TheaterSerializer(serializers.ModelSerializer):
+
     class Meta:
+        list_serializer_class = FilteredTheaterSerializer
         model = Theater
-        fields='__all__'
+        fields = '__all__'
+
 
 class CitySerializer(serializers.ModelSerializer):
-    theaters = TheaterSerializer(source='theater_set',many=True)
+    theaters = TheaterSerializer(many = True)
+
+
     class Meta:
         model=City
         fields=['name', 'theaters']
+
 
 class HallSerializer(serializers.ModelSerializer):
     theater = TheaterSerializer()
@@ -72,6 +96,7 @@ class SeatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seat
         fields='__all__'
+
 class BookingSerializer(serializers.ModelSerializer):
     # seats = serializers.SerializerMethodField()
 
