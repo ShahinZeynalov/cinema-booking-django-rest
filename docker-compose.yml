@@ -1,7 +1,7 @@
 version: '3'
 services:
   db:
-    image: postgres
+    image: postgres:12.1
     restart: on-failure
     volumes:
       - ./pgdb/:/var/lib/postgresql/data/

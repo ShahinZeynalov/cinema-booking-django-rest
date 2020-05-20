@@ -9,7 +9,7 @@ class MovieFotmatSerializer(serializers.ModelSerializer):
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
-        fields =['id','title','slug','age_restriction','average','formats','poster']
+        fields =['id','title', 'slug', 'age_restriction', 'average', 'formats', 'poster', 'now_playing']
 
 class MovieDetailSerializer(serializers.ModelSerializer):
     formats = serializers.SerializerMethodField()
@@ -26,16 +26,13 @@ class MovieDetailSerializer(serializers.ModelSerializer):
 #         fields='__all__'
 
 
-
-
 class FilteredTheaterSerializer(serializers.ListSerializer):
 
     def to_representation(self, data):
         print('--------', data.all())
         data = data.all()
-
+        
         return super(FilteredTheaterSerializer, self).to_representation(data)
-
 
 
 class TheaterSerializer(serializers.ModelSerializer):
@@ -49,7 +46,6 @@ class TheaterSerializer(serializers.ModelSerializer):
 class CitySerializer(serializers.ModelSerializer):
     theaters = TheaterSerializer(many = True)
 
-
     class Meta:
         model=City
         fields=['name', 'theaters']
@@ -61,17 +57,20 @@ class HallSerializer(serializers.ModelSerializer):
         model = Hall
         fields = ['name','theater','seats']
 
+
 class SessionTimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hour
         fields = '__all__'
+
+
 class SessionDateSerializer(serializers.ModelSerializer):
-    times  = serializers.SerializerMethodField()
+    # times  = serializers.SerializerMethodField()
     class Meta:
         model = SessionDate
-        fields='__all__'
-    def get_times(self,obj):
-        return SessionTimeSerializer(obj.times.all(),many=True).data
+        fields=['date', 'id']
+    # def get_times(self,obj):
+    #     return SessionTimeSerializer(obj.times.all(),many=True).data
 
 class SessionSerializer(serializers.ModelSerializer):
     movie = MovieSerializer()

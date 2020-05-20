@@ -1,3 +1,8 @@
 .venv
 frontend
 pgdb
+.vscode/
+**.pyc
+**/__pycache__/
+__pycache__/
+*.pyc
